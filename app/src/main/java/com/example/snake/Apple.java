@@ -4,22 +4,23 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import org.jetbrains.annotations.NotNull;
 
-public class Apple implements Collision {
-    public float xPosition;
-    public float yPosition;
+
+public class Apple extends CollisionObject {
+    public final Position position = new Position();
     public final float radius = 25f;
     private float canvasHeight;
     private float canvasWidth;
 
-    Paint paint = new Paint();
+    private final Paint paint = new Paint();
 
     public Apple() {
         paint.setColor(Color.RED);
     }
 
     public void onDraw(Canvas canvas) {
-        canvas.drawCircle(xPosition, yPosition, radius, paint);
+        canvas.drawCircle(position.getX(), position.getY(), radius, paint);
         canvasHeight = canvas.getHeight();
         canvasWidth = canvas.getWidth();
     }
@@ -27,37 +28,28 @@ public class Apple implements Collision {
     public void setPos(float x, float y) {
         canvasHeight = y;
         canvasWidth = x;
-        this.xPosition = (float) ((Math.random()) * canvasWidth);
-        this.yPosition = (float) ((Math.random()) * canvasHeight);
+        this.position.setPosition((float) ((Math.random()) * canvasWidth),(float) ((Math.random()) * canvasHeight));
     }
 
-    @Override
+    @NotNull
     public void onCollisionEnter(Snake snake) {
-        if (isInSnakeCollision(snake)) { collisionAffect(snake);}
+        super.onCollisionEnter(snake);
     }
 
-    public boolean isInSnakeCollision(Snake snake) {
-        return xPosition < snake.getFirstX() + snake.getRadius() && xPosition > snake.getFirstX() - snake.getRadius() &&
-                yPosition < snake.getFirstY() + snake.getRadius() && yPosition > snake.getFirstY() - snake.getRadius();
-    }
 
     public float getXPosition() {
-        return xPosition;
+        return position.getX();
     }
 
     public float getYPosition() {
-        return yPosition;
+        return position.getY();
     }
 
     public float getRadius() {
         return radius;
     }
 
-    @Override
-    public void onCollisionEnter(Apple apple) {
-
-    }
-
+    @NotNull
     public void collisionAffect(Snake snake){
         snake.upSpeed();
         setPos(canvasWidth, canvasHeight);

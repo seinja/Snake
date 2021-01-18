@@ -21,10 +21,10 @@ public class MainView extends View {
     private boolean isEnd = false;
     private int scoreTemp = 0;
 
-    Snake snake = new Snake();
-    Apple apple = new Apple();
-    SlowApple slowApple = new SlowApple();
-    Paint paint = new Paint();
+    private final Snake snake = new Snake();
+    private final Apple apple = new Apple();
+    private final SlowApple slowApple = new SlowApple();
+    private final Paint paint = new Paint();
 
     private final ArrayList<Obstacles> obstaclesArrayList = new ArrayList<>();
 

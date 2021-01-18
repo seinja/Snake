@@ -5,10 +5,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 
-public class SlowApple extends Apple implements Collision {
+public class SlowApple extends Apple{
     private float canvasHeight;
     private float canvasWidth;
     private final Paint paint = new Paint();
+    private final Position position = new Position();
 
     public SlowApple() {
         paint.setColor(Color.rgb(24, 242, 231));
@@ -17,21 +18,13 @@ public class SlowApple extends Apple implements Collision {
     @Override
     public void onDraw(Canvas canvas) {
         float radius = 25f;
-        canvas.drawCircle(xPosition, yPosition, radius, paint);
+        canvas.drawCircle(position.getX(), position.getY(), radius, paint);
         canvasHeight = canvas.getHeight();
         canvasWidth = canvas.getWidth();
     }
 
-    @Override
     public void onCollisionEnter(Snake snake) {
-        if (isItSnake(snake)) {
-            collisionAffect(snake);
-        }
-    }
-
-    private boolean isItSnake(Snake snake) {
-        return xPosition < snake.getFirstX() + snake.getRadius() && xPosition > snake.getFirstX() - snake.getRadius() &&
-                yPosition < snake.getFirstY() + snake.getRadius() && yPosition > snake.getFirstY() - snake.getRadius();
+        super.onCollisionEnter(snake);
     }
 
     public void collisionAffect(Snake snake) {

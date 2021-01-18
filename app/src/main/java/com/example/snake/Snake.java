@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Snake {
+public class Snake extends CollisionObject {
 
     private int score = 0;
     private int length = 1;
