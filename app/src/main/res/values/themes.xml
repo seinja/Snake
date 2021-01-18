@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Snake" parent="android:Theme.DeviceDefault.Light.NoActionBar"/>
+
+    <style name="Float.theme" parent="android:Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:background">@drawable/round</item>
+        <item name="android:colorBackground">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+</resources>

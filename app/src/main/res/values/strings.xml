@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Snake</string>
+    <string name="your_score_is">Your Score is :</string>
+</resources>
