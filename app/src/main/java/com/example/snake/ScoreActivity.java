@@ -16,13 +16,12 @@ public class ScoreActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
 
-        Button restart = (Button) findViewById(R.id.restart);
-        TextView score = (TextView) findViewById(R.id.scoreTxt);
+        Button restart = findViewById(R.id.restart);
+        TextView score = findViewById(R.id.scoreTxt);
 
         Bundle arguments = getIntent().getExtras();
 
         score.append(arguments.getString("score", "null"));
-
 
         restartGame(restart);
     }

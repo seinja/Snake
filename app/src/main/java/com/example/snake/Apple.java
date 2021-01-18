@@ -6,11 +6,11 @@ import android.graphics.Paint;
 
 
 public class Apple implements Collision {
-    public float x;
-    public float y;
+    public float xPosition;
+    public float yPosition;
     public final float radius = 25f;
-    private float canH;
-    private float canW;
+    private float canvasHeight;
+    private float canvasWidth;
 
     Paint paint = new Paint();
 
@@ -19,16 +19,16 @@ public class Apple implements Collision {
     }
 
     public void onDraw(Canvas canvas) {
-        canvas.drawCircle(x, y, radius, paint);
-        canH = canvas.getHeight();
-        canW = canvas.getWidth();
+        canvas.drawCircle(xPosition, yPosition, radius, paint);
+        canvasHeight = canvas.getHeight();
+        canvasWidth = canvas.getWidth();
     }
 
     public void setPos(float x, float y) {
-        canH = y;
-        canW = x;
-        this.x = (float) ((Math.random()) * canW);
-        this.y = (float) ((Math.random()) * canH);
+        canvasHeight = y;
+        canvasWidth = x;
+        this.xPosition = (float) ((Math.random()) * canvasWidth);
+        this.yPosition = (float) ((Math.random()) * canvasHeight);
     }
 
     @Override
@@ -37,16 +37,16 @@ public class Apple implements Collision {
     }
 
     public boolean isInSnakeCollision(Snake snake) {
-        return x < snake.getFirstX() + snake.getRadius() && x > snake.getFirstX() - snake.getRadius() &&
-                y < snake.getFirstY() + snake.getRadius() && y > snake.getFirstY() - snake.getRadius();
+        return xPosition < snake.getFirstX() + snake.getRadius() && xPosition > snake.getFirstX() - snake.getRadius() &&
+                yPosition < snake.getFirstY() + snake.getRadius() && yPosition > snake.getFirstY() - snake.getRadius();
     }
 
-    public float getX() {
-        return x;
+    public float getXPosition() {
+        return xPosition;
     }
 
-    public float getY() {
-        return y;
+    public float getYPosition() {
+        return yPosition;
     }
 
     public float getRadius() {
@@ -60,7 +60,7 @@ public class Apple implements Collision {
 
     public void collisionAffect(Snake snake){
         snake.upSpeed();
-        setPos(canW, canH);
+        setPos(canvasWidth, canvasHeight);
         snake.addScore(2);
         snake.addLength();
     }

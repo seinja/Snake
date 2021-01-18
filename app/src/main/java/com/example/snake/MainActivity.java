@@ -1,12 +1,10 @@
 package com.example.snake;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 
 public class MainActivity extends Activity {
-    private float speed;
-    static int s = 0;
+    private float snakeSpeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,14 +17,9 @@ public class MainActivity extends Activity {
 
     private void getDifficultSettings(Bundle arguments) {
         if (arguments != null) {
-            speed = arguments.getFloat("speed");
+            snakeSpeed = arguments.getFloat("speed");
         }
+            setContentView(new MainView(this, snakeSpeed));
 
-        if (s <= 0) {
-            startActivity(new Intent(this, StartActivity.class));
-            s++;
-        } else {
-            setContentView(new MainView(this, speed));
-        }
     }
 }

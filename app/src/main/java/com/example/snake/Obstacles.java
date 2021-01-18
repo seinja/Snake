@@ -6,12 +6,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 public class Obstacles implements Collision {
-    private int x;
-    private int y;
-    private int canH;
-    private int canW;
-    private final Rect r;
-    private final int rd = 75;
+    private int xPosition;
+    private int yPosition;
+    private int canvasHeight;
+    private int canvasWidth;
+    private final Rect obstacle;
+    private final int obstacleWidth = 75;
     private boolean isEnd = false;
     private boolean isShowed = false;
     private final Paint paint = new Paint();
@@ -20,44 +20,44 @@ public class Obstacles implements Collision {
     public void setShowed(boolean value) {
         if (value != isShowed) {
             isShowed = value;
-            setPos(canW, canH);
+            setPos(xPosition, yPosition);
         }
     }
 
     //Конструктор устанавливает цвет и начальное положение квадрата
     public Obstacles() {
         paint.setColor(Color.rgb(252, 5, 228));
-        r = new Rect(x - rd, y + rd, x + rd, y - rd);
+        obstacle = new Rect(xPosition - obstacleWidth, yPosition + obstacleWidth, xPosition + obstacleWidth, yPosition - obstacleWidth);
     }
 
     //Установка рандомной позиции
     public void setPos(int x, int y) {
-        canH = y;
-        canW = x;
-        this.x = (int) ((Math.random()) * canW);
-        this.y = (int) ((Math.random()) * canH);
-        r.set(this.x - rd, this.y + rd, this.x + rd, this.y - rd);
+        canvasHeight = y;
+        canvasWidth = x;
+        this.xPosition = (int) ((Math.random()) * canvasWidth);
+        this.yPosition = (int) ((Math.random()) * canvasHeight);
+        obstacle.set(this.xPosition - obstacleWidth, this.yPosition + obstacleWidth, this.xPosition + obstacleWidth, this.yPosition - obstacleWidth);
     }
 
     //Перегруженная версия метода для змеи
     public void setPos(int x, int y, Snake snake) {
-        canH = y;
-        canW = x;
-        this.x = (int) ((Math.random()) * canW);
-        this.y = (int) ((Math.random()) * canH);
+        canvasHeight = y;
+        canvasWidth = x;
+        this.xPosition = (int) ((Math.random()) * canvasWidth);
+        this.yPosition = (int) ((Math.random()) * canvasHeight);
 
         if (nearSnakeSpawn(snake)) {
-            setPos(canW, canH, snake);
+            setPos(canvasWidth, canvasHeight, snake);
         }
     }
 
     //Отрисовка препятсвий
     public void onDraw(Canvas canvas) {
-        if (r != null) {
-            r.set(r);
-            canvas.drawRect(r, paint);
-            canH = canvas.getHeight();
-            canW = canvas.getWidth();
+        if (obstacle != null) {
+            obstacle.set(obstacle);
+            canvas.drawRect(obstacle, paint);
+            canvasHeight = canvas.getHeight();
+            canvasWidth = canvas.getWidth();
 
         }
 
@@ -74,23 +74,23 @@ public class Obstacles implements Collision {
     @Override
     public void onCollisionEnter(Apple apple) {
         if (isAppleCollision(apple)) {
-            setPos(canW, canH);
+            setPos(xPosition, yPosition);
         }
     }
 
     private boolean isAppleCollision(Apple apple) {
-        return (x - rd < apple.getX() + apple.getRadius() * 2 && x + rd > apple.getX() - apple.getRadius() * 2 &&
-                y - rd < apple.getY() + apple.getRadius() * 2 && y + rd > apple.getY() - apple.getRadius() * 2);
+        return (xPosition - obstacleWidth < apple.getXPosition() + apple.getRadius() * 2 && xPosition + obstacleWidth > apple.getXPosition() - apple.getRadius() * 2 &&
+                yPosition - obstacleWidth < apple.getYPosition() + apple.getRadius() * 2 && yPosition + obstacleWidth > apple.getYPosition() - apple.getRadius() * 2);
     }
 
     private boolean isSnakeCollision(Snake snake) {
-        return (x - rd < snake.getFirstX() + snake.getRadius() && x + rd > snake.getFirstX() - snake.getRadius() &&
-                y - rd < snake.getFirstY() + snake.getRadius() && y + rd > snake.getFirstY() - snake.getRadius());
+        return (xPosition - obstacleWidth < snake.getFirstX() + snake.getRadius() && xPosition + obstacleWidth > snake.getFirstX() - snake.getRadius() &&
+                yPosition - obstacleWidth < snake.getFirstY() + snake.getRadius() && yPosition + obstacleWidth > snake.getFirstY() - snake.getRadius());
     }
 
     private boolean nearSnakeSpawn(Snake snake) {
-        return (this.x - rd < snake.getFirstX() + snake.getRadius() * 6 && this.x + rd > snake.getFirstX() - snake.getRadius() * 6 &&
-                this.y - rd < snake.getFirstY() + snake.getRadius() * 6 && this.y + rd > snake.getFirstY() - snake.getRadius() * 6);
+        return (this.xPosition - obstacleWidth < snake.getFirstX() + snake.getRadius() * 6 && this.xPosition + yPosition > snake.getFirstX() - snake.getRadius() * 6 &&
+                this.yPosition - obstacleWidth < snake.getFirstY() + snake.getRadius() * 6 && this.yPosition + obstacleWidth > snake.getFirstY() - snake.getRadius() * 6);
     }
 
     //Геттеры

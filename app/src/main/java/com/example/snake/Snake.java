@@ -11,12 +11,12 @@ public class Snake {
 
     private int score = 0;
     private int length = 1;
-    private float xVec, yVec;
     private float speed = 0.5f;
+    private float vectorX, vectorY;
     private final float RADIUS = 50;
     private final Paint paint = new Paint();
-    private final List<Integer> x = new ArrayList<Integer>();
-    private final List<Integer> y = new ArrayList<Integer>();
+    private final List<Integer> xPosition = new ArrayList<>();
+    private final List<Integer> yPosition = new ArrayList<>();
 
 
     //Конструктор устанавливает цвет и первый элемент
@@ -28,30 +28,30 @@ public class Snake {
     //Отрисовка удава
     public void onDraw(Canvas canvas) {
         drawSnakeParts(canvas);
-        canvas.drawCircle(x.get(0), y.get(0), RADIUS, paint);
+        canvas.drawCircle(xPosition.get(0), yPosition.get(0), RADIUS, paint);
     }
 
     //Установка позиции
     public void setPosition(int x, int y) {
-        this.x.set(0, x);
-        this.y.set(0, y);
+        this.xPosition.set(0, x);
+        this.yPosition.set(0, y);
     }
 
     //Добавление длинны
     public void addLength() {
-        x.add(x.get(x.size() - 1));
-        y.add(y.get(y.size() - 1));
+        xPosition.add(xPosition.get(xPosition.size() - 1));
+        yPosition.add(yPosition.get(yPosition.size() - 1));
         length++;
     }
 
     //Установка направления к месту нажатия
     public void setVector(float xPos, float yPos) {
-        float xWidth = xPos - x.get(0);
-        float yHeight = yPos - y.get(0);
+        float xWidth = xPos - xPosition.get(0);
+        float yHeight = yPos - yPosition.get(0);
         float gb = (float) Math.sqrt(xWidth * xWidth + yHeight * yHeight);
         float K = RADIUS * speed / gb;
-        xVec = xWidth * K;
-        yVec = yHeight * K;
+        vectorX = xWidth * K;
+        vectorY = yHeight * K;
 
 
     }
@@ -62,11 +62,11 @@ public class Snake {
     }
 
     public float getFirstX() {
-        return x.get(0);
+        return xPosition.get(0);
     }
 
     public float getFirstY() {
-        return y.get(0);
+        return yPosition.get(0);
     }
 
     public float getRadius() {
@@ -99,28 +99,28 @@ public class Snake {
 
     private void drawSnakeParts(Canvas canvas) {
         for (int i = length - 1; i > 0; i--) {
-            x.set(i, x.get(i - 1));
-            y.set(i, y.get(i - 1));
+            xPosition.set(i, xPosition.get(i - 1));
+            yPosition.set(i, yPosition.get(i - 1));
 
-            canvas.drawCircle(x.get(i), y.get(i), RADIUS, paint);
+            canvas.drawCircle(xPosition.get(i), yPosition.get(i), RADIUS, paint);
 
         }
-        x.set(0, (int) (x.get(0) + xVec));
-        y.set(0, (int) (y.get(0) + yVec));
+        xPosition.set(0, (int) (xPosition.get(0) + vectorX));
+        yPosition.set(0, (int) (yPosition.get(0) + vectorY));
 
 
-        if (x.get(0) > canvas.getWidth()) {
-            x.set(0, x.get(0) % canvas.getWidth());
+        if (xPosition.get(0) > canvas.getWidth()) {
+            xPosition.set(0, xPosition.get(0) % canvas.getWidth());
         }
-        if (y.get(0) > canvas.getHeight()) {
-            y.set(0, y.get(0) % canvas.getHeight());
+        if (yPosition.get(0) > canvas.getHeight()) {
+            yPosition.set(0, yPosition.get(0) % canvas.getHeight());
         }
 
-        if (x.get(0) < 0) {
-            x.set(0, x.get(0) + canvas.getWidth());
+        if (xPosition.get(0) < 0) {
+            xPosition.set(0, xPosition.get(0) + canvas.getWidth());
         }
-        if (y.get(0) < 0) {
-            y.set(0, y.get(0) + canvas.getHeight());
+        if (yPosition.get(0) < 0) {
+            yPosition.set(0, yPosition.get(0) + canvas.getHeight());
         }
     }
 
@@ -129,7 +129,7 @@ public class Snake {
     }
 
     private void addNullElement() {
-        x.add(0);
-        y.add(0);
+        xPosition.add(0);
+        yPosition.add(0);
     }
 }
