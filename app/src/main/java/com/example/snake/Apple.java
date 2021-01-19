@@ -4,56 +4,45 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import org.jetbrains.annotations.NotNull;
-
+import androidx.annotation.NonNull;
 
 public class Apple extends CollisionObject {
-    public final Position position = new Position();
-    public final float radius = 25f;
-    private float canvasHeight;
-    private float canvasWidth;
+    @NonNull
+    private final MainView parent;
 
-    private final Paint paint = new Paint();
+    protected final Paint paint = new Paint();
 
-    public Apple() {
+    public Apple(final @NonNull MainView parent) {
+        super(25f);
+        this.parent = parent;
         paint.setColor(Color.RED);
     }
 
-    public void onDraw(Canvas canvas) {
-        canvas.drawCircle(position.getX(), position.getY(), radius, paint);
-        canvasHeight = canvas.getHeight();
-        canvasWidth = canvas.getWidth();
+    public void onDraw(final Canvas canvas) {
+        canvas.drawCircle(position.getX(), position.getY(), size, paint);
     }
 
-    public void setPos(float x, float y) {
-        canvasHeight = y;
-        canvasWidth = x;
-        this.position.setPosition((float) ((Math.random()) * canvasWidth),(float) ((Math.random()) * canvasHeight));
+    public void respawn() {
+        this.position.setPosition((float) ((Math.random()) * parent.getWidth()), (float) ((Math.random()) * parent.getHeight()));
+        for (CollisionObject object : parent.obstacleArrayList) {
+            if (object.onCollisionEnter(this)) {
+                respawn();
+                return;
+            }
+        }
+
     }
 
-    @NotNull
-    public void onCollisionEnter(Snake snake) {
-        super.onCollisionEnter(snake);
+    public void onCollisionEnter(final @NonNull Snake snake) {
+        if (super.onCollisionEnter(snake)) {
+            collisionAffect(snake);
+        }
     }
 
-
-    public float getXPosition() {
-        return position.getX();
-    }
-
-    public float getYPosition() {
-        return position.getY();
-    }
-
-    public float getRadius() {
-        return radius;
-    }
-
-    @NotNull
-    public void collisionAffect(Snake snake){
+    public void collisionAffect(final @NonNull Snake snake) {
         snake.upSpeed();
-        setPos(canvasWidth, canvasHeight);
+        respawn();
         snake.addScore(2);
-        snake.addLength();
+        snake.addSegments();
     }
 }

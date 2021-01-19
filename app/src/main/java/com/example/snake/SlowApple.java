@@ -2,36 +2,26 @@ package com.example.snake;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
+
+import androidx.annotation.NonNull;
 
 
-public class SlowApple extends Apple{
-    private float canvasHeight;
-    private float canvasWidth;
-    private final Paint paint = new Paint();
-    private final Position position = new Position();
-
-    public SlowApple() {
+public class SlowApple extends Apple {
+    public SlowApple(final @NonNull MainView parent) {
+        super(parent);
         paint.setColor(Color.rgb(24, 242, 231));
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
-        float radius = 25f;
-        canvas.drawCircle(position.getX(), position.getY(), radius, paint);
-        canvasHeight = canvas.getHeight();
-        canvasWidth = canvas.getWidth();
+    public void onDraw(final @NonNull Canvas canvas) {
+        canvas.drawCircle(position.getX(), position.getY(), size, paint);
     }
 
-    public void onCollisionEnter(Snake snake) {
-        super.onCollisionEnter(snake);
-    }
-
-    public void collisionAffect(Snake snake) {
+    @Override
+    public void collisionAffect(final @NonNull Snake snake) {
         snake.slowSpeed();
-        setPos(canvasWidth, canvasHeight);
+        respawn();
         snake.addScore(1);
-        snake.downLength();
+        snake.downSegments();
     }
-
 }

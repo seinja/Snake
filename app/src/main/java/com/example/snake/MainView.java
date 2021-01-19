@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -18,15 +20,19 @@ import java.util.ArrayList;
 public class MainView extends View {
 
     private boolean isInit = false;
-    private boolean isEnd = false;
+
+    private boolean isEnd() {
+        return snake.isLive();
+    }
+
     private int scoreTemp = 0;
 
     private final Snake snake = new Snake();
-    private final Apple apple = new Apple();
-    private final SlowApple slowApple = new SlowApple();
+    private final Apple apple = new Apple(this);
+    private final SlowApple slowApple = new SlowApple(this);
     private final Paint paint = new Paint();
 
-    private final ArrayList<Obstacles> obstaclesArrayList = new ArrayList<>();
+    public final ArrayList<Obstacle> obstacleArrayList = new ArrayList<>();
 
     public MainView(Context context, float speed) {
         super(context);
@@ -41,9 +47,10 @@ public class MainView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        if (!isEnd) {
+        if (isEnd()) {
             if (!isInit) {
-                apple.setPos(getWidth(), getHeight());
+                apple.respawn();
+                slowApple.respawn();
                 snake.setPosition(getWidth() / 2, getHeight() / 2);
                 isInit = true;
             }
@@ -51,10 +58,10 @@ public class MainView extends View {
             spawnManager(canvas);
             drawSnake(canvas);
             drawApples(canvas);
-            drawObstacles(obstaclesArrayList, canvas);
+            drawObstacles(obstacleArrayList, canvas);
             drawText(canvas, paint);
             addApplesCollision(apple, slowApple, snake);
-            addObstaclesCollision(obstaclesArrayList, apple, slowApple, snake);
+            addObstaclesCollision(obstacleArrayList, apple, slowApple, snake);
             invalidate();
 
 
@@ -72,7 +79,7 @@ public class MainView extends View {
         return super.onTouchEvent(event);
     }
 
-    private void sendScoreInfo(Snake snake) {
+    private void sendScoreInfo(@NonNull Snake snake) {
         Intent intent = new Intent(getContext(), ScoreActivity.class);
         intent.putExtra("score", snake.getScore());
         Activity parentActivity = ((Activity) getContext());
@@ -80,52 +87,52 @@ public class MainView extends View {
         parentActivity.finish();
     }
 
-    private void drawText(Canvas can, Paint paint) {
+    private void drawText(@NonNull Canvas can, @NonNull Paint paint) {
         paint.setTextSize(54);
         can.drawText(snake.getScore(), getWidth() * .9f, getHeight() * .05f, paint);
         can.drawText(String.valueOf(snake.getSpeed()), getWidth() * .1f, getHeight() * .05f, paint);
     }
 
-    private void spawnManager(Canvas can) {
+    private void spawnManager(@NonNull Canvas can) {
         if (Integer.parseInt(snake.getScore()) % 3 == 0) {
             slowApple.onDraw(can);
         }
         if (Integer.parseInt(snake.getScore()) > scoreTemp) {
-            apple.setPos(getWidth(), getHeight());
-            slowApple.setPos(getWidth(), getHeight());
-            obstaclesArrayList.add(new Obstacles());
-            obstaclesArrayList.get(obstaclesArrayList.size() - 1).setPos(getWidth(), getHeight(), snake);
+            apple.respawn();
+            slowApple.respawn();
+            obstacleArrayList.add(new Obstacle());
+            obstacleArrayList.get(obstacleArrayList.size() - 1).setPos(getWidth(), getHeight());
 
-            for (Obstacles ob : obstaclesArrayList) {
-                ob.setShowed(true);
+            for (Obstacle ob : obstacleArrayList) {
+                ob.setRespawn(true);
             }
             scoreTemp++;
         }
     }
 
-    private void drawObstacles(ArrayList<Obstacles> obstaclesArrayList, Canvas can) {
-        for (Obstacles ob : obstaclesArrayList) {
+    private void drawObstacles(@NonNull ArrayList<Obstacle> obstacleArrayList, @NonNull Canvas can) {
+        for (Obstacle ob : obstacleArrayList) {
             ob.onDraw(can);
         }
     }
 
-
-    private void drawSnake(Canvas can) {
+    private void drawSnake(@NonNull Canvas can) {
         snake.onDraw(can);
     }
 
 
-    private void addApplesCollision(Apple apple, Apple slowApple, Snake snake) {
+    private void addApplesCollision(@NonNull Apple apple, @NonNull Apple slowApple, @NonNull Snake snake) {
         apple.onCollisionEnter(snake);
         slowApple.onCollisionEnter(snake);
     }
 
-    private void addObstaclesCollision(ArrayList<Obstacles> obstaclesArrayList, Apple apple, Apple slowApple, Snake snake) {
-        for (int i = obstaclesArrayList.size() - 1; i >= 0 && !isEnd; i--) {
-            obstaclesArrayList.get(i).onCollisionEnter(snake);
-            obstaclesArrayList.get(i).onCollisionEnter(apple);
-            obstaclesArrayList.get(i).onCollisionEnter(slowApple);
-            isEnd = obstaclesArrayList.get(i).getIsEnd();
+    private void addObstaclesCollision(@NonNull ArrayList<Obstacle> obstacleArrayList, @NonNull Apple apple, @NonNull Apple slowApple, @NonNull Snake snake) {
+        for (int i = obstacleArrayList.size() - 1; i >= 0 && isEnd(); i--) {
+            if (snake.onCollisionEnter(obstacleArrayList.get(i))) {
+                snake.kill();
+            }
+            obstacleArrayList.get(i).onCollisionEnter(apple);
+            obstacleArrayList.get(i).onCollisionEnter(slowApple);
         }
     }
 

@@ -3,6 +3,8 @@ package com.example.snake;
 import android.app.Activity;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+
 import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends Activity {
@@ -17,8 +19,7 @@ public class MainActivity extends Activity {
 
     }
 
-    @NotNull
-    private void getDifficultSettings(Bundle arguments) {
+    private void getDifficultSettings(@NonNull Bundle arguments) {
         if (arguments != null) {
             snakeSpeed = arguments.getFloat("speed");
         }

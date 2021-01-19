@@ -1,5 +1,7 @@
 package com.example.snake;
 
+import org.jetbrains.annotations.NotNull;
+
 public interface Collision {
-    void onCollisionEnter(CollisionObject object);
+    boolean onCollisionEnter(final @NotNull  CollisionObject object);
 }
